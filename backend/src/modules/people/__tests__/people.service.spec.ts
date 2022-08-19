@@ -33,7 +33,7 @@ describe("People Service", () => {
 
     let createPersonDTO: CreatePersonDTO = {
       contacts: [],
-      name: "Eduardo",
+      name: "Kakashi",
     };
 
     it("Should throw if called with wrong parameters", async () => {
@@ -77,7 +77,7 @@ describe("People Service", () => {
   describe("findAll()", () => {
     beforeEach(() => {
       personRepository.find.mockClear();
-      [naruto, sasuke] = createPeople()
+      [ naruto, sasuke ] = createPeople();
     });
 
     it("Should call the userRepository.find once", async () => {
@@ -93,16 +93,116 @@ describe("People Service", () => {
     });
 
     it("Should return a list of people from repository", async () => {
-      const MOCKED_RESPONSE = [naruto, sasuke]
+      const MOCKED_RESPONSE = [ naruto, sasuke ];
       personRepository.find.mockResolvedValueOnce(MOCKED_RESPONSE);
       const response = await peopleService.findAll();
-      expect(response.length).toBe(2)
+      expect(response.length).toBe(2);
       response.forEach((person, idx) => {
-        expect(person.name).toBe(MOCKED_RESPONSE[idx].name)
-        expect(person.id).toBe(MOCKED_RESPONSE[idx].id)
-      })
-      expect(response.length).toBe(2)
+        expect(person.name).toBe(MOCKED_RESPONSE[idx].name);
+        expect(person.id).toBe(MOCKED_RESPONSE[idx].id);
+      });
+      expect(response.length).toBe(2);
+    });
+  });
 
+  describe("findPersonById()", () => {
+    beforeEach(() => {
+      personRepository.findOneByOrFail.mockClear();
+      [ naruto ] = createPeople(1);
+
+    });
+
+    it("Should throw if called with wrong parameters", async () => {
+      await expect(async () => {
+        await peopleService.findPersonById("");
+      }).rejects.toThrow();
+    });
+
+    it("Should throw if user not found", async () => {
+      personRepository.findOneByOrFail.mockRejectedValueOnce(new Error("Not Found"));
+      await expect(async () => {
+        await peopleService.findPersonById("1234");
+      }).rejects.toThrow();
+    });
+
+    it("Should NOT throw if user found", async () => {
+      personRepository.findOneByOrFail.mockResolvedValueOnce(naruto);
+      await expect(
+        peopleService.findPersonById("1234"),
+      ).resolves.not.toThrow();
+    });
+
+    it("Should call repository with correct parameters", async () => {
+      await peopleService.findPersonById("1234");
+      expect(
+        personRepository.findOneByOrFail,
+      ).toBeCalledWith({ id: "1234" });
+    });
+  });
+
+  describe("updatePerson()", () => {
+    let updatePersonDTO: Partial<CreatePersonDTO>;
+    beforeEach(() => {
+      personRepository.findOneByOrFail.mockClear();
+      personRepository.save.mockClear();
+      updatePersonDTO = {
+        name: "Sakura",
+      };
+    });
+
+    it("Should throw if called with wrong parameters", async () => {
+      await expect(async () => {
+        await peopleService.updatePerson("", {} as Partial<CreatePersonDTO>);
+      }).rejects.toThrow();
+    });
+
+    it("Should NOT throw if called with correct parameters", async () => {
+      personRepository.save.mockResolvedValueOnce({ ...naruto, name: "Sakura" });
+      personRepository.findOneByOrFail.mockResolvedValueOnce(naruto);
+      await expect(
+        peopleService.updatePerson(naruto.id, updatePersonDTO),
+      ).resolves.not.toThrow();
+    });
+
+    it("Should throw if person not found", async () => {
+      personRepository.findOneByOrFail.mockRejectedValueOnce(new Error("Not Found"));
+      await expect(async () => {
+        await peopleService.updatePerson("1234", updatePersonDTO);
+      }).rejects.toThrow();
+    });
+  });
+
+  describe("deletePerson()", () => {
+    beforeEach(() => {
+      personRepository.remove.mockClear();
+      [ naruto ] = createPeople(1);
+    });
+
+    it("Should throw if called with incorrect parameters", async () => {
+      await expect(async () => {
+        await peopleService.deletePerson("");
+      }).rejects.toThrow();
+    });
+
+    it("Should NOT throw if called with correct parameters", async () => {
+      await expect(
+        peopleService.deletePerson(naruto.id),
+      ).resolves.not.toThrow();
+    });
+
+    it("Should throw if person not found", async () => {
+      personRepository.findOneByOrFail.mockRejectedValueOnce(new Error("Not Found"));
+      await expect(async () => {
+        await peopleService.deletePerson("1234");
+      }).rejects.toThrow();
+    });
+
+    it("Should call repository with correct parameters", async () => {
+      personRepository.findOneByOrFail.mockResolvedValueOnce(naruto);
+      await peopleService.deletePerson(naruto.id);
+      expect(
+        personRepository.remove,
+      ).toBeCalledWith(naruto);
     });
   });
 });

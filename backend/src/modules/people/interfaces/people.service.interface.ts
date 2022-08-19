@@ -3,11 +3,8 @@ import { CreatePersonDTO } from "./createPerson.dto";
 
 export interface IPeopleService {
   createPerson(createPersonDto: CreatePersonDTO): Promise<Person>;
-
   findAll(): Promise<Person[]>;
-
-  getPersonById(id: string): Promise<Person>;
-
-  updatePerson(): Promise<Person>;
-  deletePerson(): Promise<void>;
+  findPersonById(id: string): Promise<Person>;
+  updatePerson(id: string, updatePersonDTO: Partial<CreatePersonDTO>): Promise<Person>;
+  deletePerson(id: string): Promise<void>;
 }
