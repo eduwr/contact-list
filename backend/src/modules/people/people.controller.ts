@@ -18,7 +18,7 @@ export class PeopleController implements ControllerInterface {
     const { name, contacts } = req.body as CreatePersonDTO;
     try {
       const person = await this.peopleService.createPerson({ name, contacts });
-      res.status(204);
+      res.status(201);
       res.send(person);
     } catch (e) {
       res.status(400);
@@ -37,5 +37,4 @@ export class PeopleController implements ControllerInterface {
   update(req: Request, res: Response): Promise<void> {
     return Promise.resolve(undefined);
   }
-
 }
