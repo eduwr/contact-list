@@ -3,19 +3,28 @@ import { ContactsService } from "../contacts.service";
 import { Repository } from "typeorm";
 import { Contact } from "../contact.entity";
 import { mockedContactsRepository } from "../__mocks__/mockedContactsRepository";
+import { IPeopleService } from "../../people/interfaces/people.service.interface";
+import { mockedPeopleService } from "../__mocks__/mockedPeopleService";
+import { Person } from "../../people/person.entity";
+import { createPeople } from "../../people/__mocks__/utils/createPeople";
 
 describe("Contacts Service", () => {
   let contactsService: IContactsService;
   let contactsRepository: jest.MockedObject<Repository<Contact>>;
-  beforeEach(() => {
+  let peopleServices: jest.MockedObject<IPeopleService>;
+  let naruto: Person;
 
+  beforeEach(() => {
+    peopleServices = mockedPeopleService;
     contactsRepository = mockedContactsRepository;
-    contactsService = new ContactsService(contactsRepository);
+    contactsService = new ContactsService(contactsRepository, peopleServices);
   });
 
   describe("findAllByPersonId()", () => {
     beforeEach(() => {
       mockedContactsRepository.find.mockClear();
+      peopleServices.findPersonById.mockClear();
+      [ naruto ] = createPeople(1);
     });
 
     it("Should throw if called without personId", async () => {
@@ -31,10 +40,45 @@ describe("Contacts Service", () => {
     });
 
     it("Should call contactsRepository Once", async () => {
-      await contactsService.findAllByPersonId("1"),
+      await contactsService.findAllByPersonId("1");
       await expect(
-       contactsRepository.find
+        contactsRepository.find,
       ).toBeCalledTimes(1);
+    });
+
+    it("Should throw if contactsRepository throws", async () => {
+      contactsRepository.find.mockRejectedValueOnce(new Error("Internal Server Error"));
+      await expect(
+        async () => await contactsService.findAllByPersonId("personId"),
+      ).rejects.toThrow();
+    });
+
+    it("Should call peopleServices with correct parameters", async () => {
+      const PERSON_ID = "personId";
+      await contactsService.findAllByPersonId(PERSON_ID);
+
+      await expect(
+        peopleServices.findPersonById,
+      ).toBeCalledWith(PERSON_ID);
+    });
+
+    it("Should throw if person not found", async () => {
+      peopleServices.findPersonById.mockRejectedValueOnce(new Error("Not Found"));
+      await expect(
+        async () => await contactsService.findAllByPersonId("personId"),
+      ).rejects.toThrow();
+    });
+
+    it("Should call contactsRepository.find with correct parameters", async () => {
+      peopleServices.findPersonById.mockResolvedValueOnce(naruto);
+      await contactsService.findAllByPersonId(naruto.id);
+      await expect(
+        contactsRepository.find,
+      ).toBeCalledWith({
+        where: {
+          person: naruto,
+        },
+      });
     });
   });
 });

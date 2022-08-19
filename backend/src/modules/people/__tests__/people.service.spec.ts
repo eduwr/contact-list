@@ -4,21 +4,13 @@ import { CreatePersonDTO } from "../interfaces/createPerson.dto";
 import { mockedPersonRepositoryInstance } from "../__mocks__/mockedPersonRepository";
 import { Repository } from "typeorm";
 import { Person } from "../person.entity";
+import { createPeople } from "../__mocks__/utils/createPeople";
 
 describe("People Service", () => {
   let peopleService: IPeopleService;
   let personRepository: jest.MockedObject<Repository<Person>>;
   let naruto: Person;
   let sasuke: Person;
-
-  const createPeople = (n = 2): Person[] =>
-    Array
-      .from({ length: n }, () => new Person())
-      .map((person, idx) => {
-        person.id = idx.toString();
-        person.name = `person-${idx}`;
-        return person;
-      });
 
   beforeEach(() => {
     personRepository = mockedPersonRepositoryInstance;
