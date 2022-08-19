@@ -1,13 +1,11 @@
 import { Contact } from "../contacts/contact.entity";
+import { Entity, Column, PrimaryColumn } from "typeorm"
 
+@Entity()
 export class Person {
+  @PrimaryColumn()
   id: string;
-  name: string;
-  contacts: Contact[];
 
-  constructor({ name = "", contacts = [] }) {
-    this.id = "1"
-    this.name = name
-    this.contacts = contacts
-  }
+  @Column()
+  name: string;
 }

@@ -1,25 +1,34 @@
 import { IPeopleService } from "./interfaces/people.service.interface";
 import { Person } from "./person.entity";
 import { CreatePersonDTO } from "./interfaces/createPerson.dto";
-import { EntityCreatedResponse } from "../../shared/types/EntityResponse";
 
-export class PeopleService implements IPeopleService{
+import { Repository } from "typeorm";
+import { v4 as uuid } from "uuid";
 
-  async createPerson(createPersonDto: CreatePersonDTO): Promise<EntityCreatedResponse> {
-    if(!createPersonDto.name) {
-      throw new Error("Bad Request")
+export class PeopleService implements IPeopleService {
+
+  constructor(private readonly personRepository: Repository<Person>) {
+  }
+
+
+  async createPerson(createPersonDto: CreatePersonDTO): Promise<Person> {
+    if (!createPersonDto.name) {
+      throw new Error("Bad Request");
     }
 
-    const person = new Person({
-      name: createPersonDto.name,
-    })
-    return {
-      id: person.id
+    const person = new Person();
+    person.name = createPersonDto.name;
+    person.id = uuid();
+
+    try {
+      return await this.personRepository.save(person);
+    } catch (e) {
+      throw new Error("Internal Server Error");
     }
   }
 
   deletePerson(): void {
-    throw new Error("Method not implemented")
+    throw new Error("Method not implemented");
   }
 
   findAll(): Person[] {
@@ -27,13 +36,10 @@ export class PeopleService implements IPeopleService{
   }
 
   getPersonById(id: string): Person {
-    throw new Error("Method not implemented")
+    throw new Error("Method not implemented");
   }
 
   updatePerson(): Person {
-    throw new Error("Method not implemented")
+    throw new Error("Method not implemented");
   }
-
-
-
 }

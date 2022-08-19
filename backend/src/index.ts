@@ -1,1 +1,1 @@
-console.log("HELLO INDEX")
+import "reflect-metadata"
