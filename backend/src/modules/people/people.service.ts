@@ -27,19 +27,19 @@ export class PeopleService implements IPeopleService {
     }
   }
 
-  deletePerson(): void {
+  deletePerson(): Promise<void> {
     throw new Error("Method not implemented");
   }
 
-  findAll(): Person[] {
-    return [];
+  async findAll(): Promise<Person[]> {
+    return await this.personRepository.find()
   }
 
-  getPersonById(id: string): Person {
+  getPersonById(id: string): Promise<Person> {
     throw new Error("Method not implemented");
   }
 
-  updatePerson(): Person {
+  updatePerson(): Promise<Person> {
     throw new Error("Method not implemented");
   }
 }
