@@ -1,8 +1,11 @@
 import { IContactsService } from "./interfaces/contacts.service.interface";
 import { CreateContactDTO } from "./interfaces/createContact.dto";
 import { Contact } from "./contact.entity";
+import { Repository } from "typeorm";
 
 export class ContactsService implements IContactsService{
+  constructor(private contactsRepository: Repository<Contact>) {
+  }
   createContact(createPersonDto: CreateContactDTO): Promise<Contact> {
     throw new Error("Method not implemented")
   }
@@ -16,7 +19,7 @@ export class ContactsService implements IContactsService{
       throw new Error("Bad Request")
     }
 
-    return Promise.resolve([new Contact()])
+    return await this.contactsRepository.find()
   }
 
   findContactById(id: string): Promise<Contact> {
