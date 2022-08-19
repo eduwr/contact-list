@@ -22,19 +22,44 @@ export class PeopleController implements ControllerInterface {
       res.send(person);
     } catch (e) {
       res.status(400);
-      res.send(e)
+      res.send(e);
     }
   }
 
-  delete(req: Request, res: Response): Promise<void> {
-    return Promise.resolve(undefined);
+  async delete(req: Request, res: Response): Promise<void> {
+    const { id } = req.params;
+    try {
+      await this.peopleService.deletePerson(id);
+      res.status(204);
+      res.send()
+    } catch (e) {
+      res.status(400);
+      res.send(e);
+    }
   }
 
-  show(req: Request, res: Response): Promise<void> {
-    return Promise.resolve(undefined);
+  async show(req: Request, res: Response): Promise<void> {
+    const { id } = req.params;
+    try {
+      const person = await this.peopleService.findPersonById(id);
+      res.status(200);
+      res.send(person);
+    } catch (e) {
+      res.status(400);
+      res.send(e);
+    }
   }
 
-  update(req: Request, res: Response): Promise<void> {
-    return Promise.resolve(undefined);
+  async update(req: Request, res: Response): Promise<void> {
+    const { id } = req.params;
+    const { name, contacts } = req.body as CreatePersonDTO;
+    try {
+      const person = await this.peopleService.updatePerson(id, { name, contacts });
+      res.status(200);
+      res.send(person);
+    } catch (e) {
+      res.status(400);
+      res.send(e);
+    }
   }
 }
