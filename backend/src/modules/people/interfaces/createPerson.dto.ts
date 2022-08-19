@@ -1,6 +1,6 @@
-import { Contact } from "../../contacts/contact.entity";
+import { CreateContactDTO } from "../../contacts/interfaces/createContact.dto";
 
 export interface CreatePersonDTO {
   name: string;
-  contacts?: Omit<Contact, 'id'| 'personId'>[]
+  contacts?: CreateContactDTO[]
 }

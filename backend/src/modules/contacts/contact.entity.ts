@@ -1,6 +1,17 @@
-export interface Contact {
+import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { Person } from "../people/person.entity";
+
+@Entity()
+export class Contact {
+  @PrimaryColumn()
   id: string;
-  personId: string;
-  name: string;
+
+  @Column()
+  type: string;
+
+  @Column()
   value: string
+
+  @ManyToOne(() => Person, (person) => person.contacts)
+  person: Person
 }

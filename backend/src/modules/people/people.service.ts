@@ -4,12 +4,25 @@ import { CreatePersonDTO } from "./interfaces/createPerson.dto";
 
 import { Repository } from "typeorm";
 import { v4 as uuid } from "uuid";
+import { CreateContactDTO } from "../contacts/interfaces/createContact.dto";
+import { Contact } from "../contacts/contact.entity";
 
 export class PeopleService implements IPeopleService {
 
   constructor(private readonly personRepository: Repository<Person>) {
   }
 
+  private createContacts(contacts = [] as CreateContactDTO[]) {
+    return contacts.map(contactDTO => {
+      const contact = new Contact();
+      contact.id = uuid();
+      contact.type = contactDTO.type;
+      contact.value = contactDTO.value;
+
+      return contact;
+    })
+
+  }
 
   async createPerson(createPersonDto: CreatePersonDTO): Promise<Person> {
     if (!createPersonDto.name) {
@@ -17,8 +30,10 @@ export class PeopleService implements IPeopleService {
     }
 
     const person = new Person();
-    person.name = createPersonDto.name;
+
     person.id = uuid();
+    person.name = createPersonDto.name;
+    person.contacts = this.createContacts(createPersonDto.contacts)
 
     try {
       return await this.personRepository.save(person);
@@ -28,15 +43,22 @@ export class PeopleService implements IPeopleService {
   }
 
   async findAll(): Promise<Person[]> {
-    return await this.personRepository.find();
+    return await this.personRepository.find({
+      relations: {
+        contacts: true
+      }
+    });
   }
 
   async findPersonById(id: string): Promise<Person> {
     if (!id) {
       throw new Error("Bad Request");
     }
-    return await this.personRepository.findOneByOrFail({
-      id,
+    return await this.personRepository.findOneOrFail({
+      where: { id },
+      relations: {
+        contacts: true
+      }
     });
   }
 

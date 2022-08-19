@@ -1,5 +1,5 @@
 import { Contact } from "../contacts/contact.entity";
-import { Entity, Column, PrimaryColumn } from "typeorm"
+import { Entity, Column, PrimaryColumn, OneToMany, JoinColumn } from "typeorm";
 
 @Entity()
 export class Person {
@@ -8,4 +8,10 @@ export class Person {
 
   @Column()
   name: string;
+
+  @OneToMany(() => Contact, (contact) => contact.person, {
+    cascade: ["insert", "update", "remove"],
+  })
+  @JoinColumn()
+  contacts: Contact[]
 }
