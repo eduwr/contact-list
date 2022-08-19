@@ -11,8 +11,12 @@ export class ContactsService implements IContactsService{
     throw new Error("Method not implemented")
   }
 
-  findAllByPersonId(personId:string): Promise<Contact[]> {
-    throw new Error("Method not implemented")
+  async findAllByPersonId(personId:string): Promise<Contact[]> {
+    if(!personId) {
+      throw new Error("Bad Request")
+    }
+
+    return Promise.resolve([new Contact()])
   }
 
   findContactById(id: string): Promise<Contact> {
