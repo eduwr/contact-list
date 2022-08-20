@@ -1,0 +1,22 @@
+{
+  "name": "contact-list",
+  "version": "1.0.0",
+  "description": "## Description",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setup:frontend": "cd ./frontend && npm i",
+    "setup:backend": "cd ./backend && npm i",
+    "setup": "npm run setup:frontend && npm run setup:backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eduwr/contact-list.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eduwr/contact-list/issues"
+  },
+  "homepage": "https://github.com/eduwr/contact-list#readme"
+}
