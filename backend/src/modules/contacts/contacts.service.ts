@@ -4,35 +4,41 @@ import { Contact } from "./contact.entity";
 import { Repository } from "typeorm";
 import { IPeopleService } from "../people/interfaces/people.service.interface";
 
-export class ContactsService implements IContactsService{
+export class ContactsService implements IContactsService {
   constructor(private contactsRepository: Repository<Contact>, private peopleServices: IPeopleService) {
   }
+
   createContact(createPersonDto: CreateContactDTO): Promise<Contact> {
-    throw new Error("Method not implemented")
+    throw new Error("Method not implemented");
   }
 
-  deleteContact(id: string): Promise<void> {
-    throw new Error("Method not implemented")
-  }
-
-  async findAllByPersonId(personId:string): Promise<Contact[]> {
-    if(!personId) {
-      throw new Error("Bad Request")
+  async deleteContact(id: string): Promise<void> {
+    if (!id) {
+      throw new Error("Bad Request");
     }
-    const person = await this.peopleServices.findPersonById(personId)
+
+    const contract = await this.contactsRepository.findOneOrFail({ where: { id } });
+    await this.contactsRepository.remove(contract);
+  }
+
+  async findAllByPersonId(personId: string): Promise<Contact[]> {
+    if (!personId) {
+      throw new Error("Bad Request");
+    }
+    const person = await this.peopleServices.findPersonById(personId);
 
     return await this.contactsRepository.find({
       where: {
-        person
-      }
-    })
+        person,
+      },
+    });
   }
 
   findContactById(id: string): Promise<Contact> {
-    throw new Error("Method not implemented")
+    throw new Error("Method not implemented");
   }
 
   updateContact(id: string, updateContactDTO: Partial<CreateContactDTO>): Promise<Contact> {
-    throw new Error("Method not implemented")
+    throw new Error("Method not implemented");
   }
 }

@@ -81,4 +81,45 @@ describe("Contacts Service", () => {
       });
     });
   });
+
+  describe("deleteContact()", () => {
+
+    beforeEach(() => {
+      contactsRepository.findOneOrFail.mockClear();
+      contactsRepository.remove.mockClear();
+    });
+
+    it("Should throw if called without id", async () => {
+      await expect(async () => {
+        await contactsService.deleteContact("");
+      }).rejects.toThrow();
+    });
+
+    it("Should NOT throw if called with a valid id", async () => {
+      await expect(contactsService.deleteContact("random_id"),
+      ).resolves.not.toThrow();
+    });
+
+
+    it("Should call findContactById Once", async () => {
+      await contactsService.deleteContact("1");
+      await expect(
+        contactsRepository.findOneOrFail,
+      ).toBeCalledTimes(1);
+    });
+
+    it("Should throw if repository throws", async () => {
+      contactsRepository.remove.mockRejectedValueOnce(new Error());
+      await expect(
+        async () => await contactsService.deleteContact("1"),
+      ).rejects.toThrow();
+    });
+
+    it("Should not throw if repository resolves", async () => {
+      contactsRepository.remove.mockResolvedValue({ id: "any", type: "any", person: naruto, value: "any" });
+      await expect(
+        contactsService.deleteContact("1"),
+      ).resolves.not.toThrow();
+    });
+  });
 });
