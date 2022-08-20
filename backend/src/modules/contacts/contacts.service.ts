@@ -68,7 +68,12 @@ export class ContactsService implements IContactsService {
       throw new Error("Bad Request");
     }
 
+    console.log({value})
+
     const contact = await this.findContactById(id);
+
+    contact.value = value || contact.value;
+    contact.type = type || contact.type;
 
     return await this.contactsRepository.save(contact)
   }

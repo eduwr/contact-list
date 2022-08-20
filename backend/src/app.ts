@@ -30,5 +30,5 @@ export class App implements AppInterface{
 }
 
 export const appProvider = (c: Container) => {
-  c.service("App", c => new App([c.PeopleRoutes]))
+  c.service("App", c => new App([c.PeopleRoutes, c.ContactsRoutes]))
 }
