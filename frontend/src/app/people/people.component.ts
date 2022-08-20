@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PeopleService } from "../services/people.service";
 import { Person } from "../../shared/interfaces/person.interface";
+import { CreatePersonDTO } from "../../shared/dto/CreatePersonDTO";
+
 
 @Component({
   selector: 'app-people',
@@ -8,6 +10,7 @@ import { Person } from "../../shared/interfaces/person.interface";
 })
 export class PeopleComponent implements OnInit {
   people: Person[] = [];
+  addPersonStep = 0;
 
   constructor(public peopleService: PeopleService) {
   }
@@ -36,12 +39,23 @@ export class PeopleComponent implements OnInit {
     })
   }
 
-  getPersonInitials(name: string) {
-    return name
-      .trim()
-      .split(" ")
-      .map(part => part.charAt(0))
-      .join(" ");
+  addPersonNextStep(step?: number) {
+    if(typeof step !== "undefined") {
+      this.addPersonStep = step;
+      return;
+    }
+    this.addPersonStep++
   }
 
+  createPerson(payload: CreatePersonDTO) {
+    this.peopleService.createPerson(payload).subscribe({
+      next: (response) => {
+        this.people.push(response)
+      },
+      error: (err) => {
+        console.log(err)
+      },
+      complete: () =>  this.addPersonNextStep(0)
+    })
+  }
 }

@@ -6,17 +6,21 @@ import { AppComponent } from './app.component';
 import { PeopleComponent } from './people/people.component';
 import { HttpClientModule } from '@angular/common/http';
 import { PersonCardComponent } from './components/person-card/person-card.component';
+import { AddPersonFormComponent } from './components/add-person-form/add-person-form.component';
+import { ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
     AppComponent,
     PeopleComponent,
-    PersonCardComponent
+    PersonCardComponent,
+    AddPersonFormComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -4,35 +4,27 @@
   <section class="py-10 px-5 ">
     <ul class="flex flex-row justify-center flex-wrap gap-8">
       <li *ngFor="let person2 of people">
-        <app-person-card (onDelete)="deletePerson($event)" [person]="person2" ></app-person-card>
+        <app-person-card (onDelete)="deletePerson($event)" [person]="person2"></app-person-card>
       </li>
     </ul>
 
   </section>
-  <div class="tooltip tooltip-right tooltip-primary fixed bottom-10 left-10" data-tip="Add Person">
-    <label for="add-user-modal" class="btn btn-circle btn-lg text-4xl btn-primary modal-button">+</label>
+
+
+  <div *ngIf="addPersonStep === 0" class="tooltip tooltip-right tooltip-primary fixed bottom-10 left-10"
+       data-tip="Add Person">
+    <button type="button" (click)="addPersonNextStep(1)"
+            class="btn btn-circle btn-lg text-4xl btn-primary modal-button">+
+    </button>
   </div>
 
+  <app-add-person-form
+    (onSubmit)="createPerson($event)"
+    (onClose)="addPersonNextStep(0)"
+    (onNextStep)="addPersonNextStep()"
+    [addPersonStep]="addPersonStep">
+  </app-add-person-form>
 
-
-  <!-- Put this part before </body> tag -->
-  <input type="checkbox" id="add-user-modal" class="modal-toggle" />
-  <div class="modal">
-    <div class="modal-box">
-      <ul class="steps">
-        <li class="step step-primary">Person Name</li>
-        <li class="step">Contacts</li>
-      </ul>
-      <form>
-        <div class="form-control w-full max-w-xs">
-          <label class="label">
-            <span class="label-text">What is your name?</span>
-          </label>
-          <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
-        </div>
-      </form>
-    </div>
-  </div>
 </main>
 
 

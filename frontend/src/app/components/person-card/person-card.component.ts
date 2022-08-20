@@ -29,4 +29,6 @@ export class PersonCardComponent implements OnInit {
       .map(part => part.charAt(0))
       .join(" ");
   }
+
+
 }
