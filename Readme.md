@@ -41,3 +41,12 @@ On the main directory just run (Docker needed):
 ### Run without docker
 
 Check the readme inside each project.
+
+## Pages
+### Home
+
+![img.png](img.png)
+
+### People list
+
+![img_1.png](img_1.png)
