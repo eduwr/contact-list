@@ -13,5 +13,5 @@ export class Person {
     cascade: ["insert", "update", "remove"],
   })
   @JoinColumn()
-  contacts: Contact[]
+  contacts: Contact[];
 }

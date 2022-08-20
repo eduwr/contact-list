@@ -10,8 +10,8 @@ export class Contact {
   type: string;
 
   @Column()
-  value: string
+  value: string;
 
-  @ManyToOne(() => Person, (person) => person.contacts)
-  person: Person
+  @ManyToOne(() => Person, (person) => person.contacts, { onDelete: "CASCADE" })
+  person: Person;
 }
