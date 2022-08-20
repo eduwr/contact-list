@@ -1,0 +1,27 @@
+<div class="indicator">
+  <!-- Indicator Delete Button -->
+  <span class="indicator-item">
+        <button (click)="emitDeleteEvent(person.id)" class="btn btn-circle btn-sm btn-error">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path
+          stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </span>
+  <!-- Card -->
+
+  <div class="card w-96 bg-base-100 shadow-xl">
+    <div class="card-body">
+      <div class="avatar placeholder">
+        <div class="bg-neutral-focus text-neutral-content rounded-full w-16">
+          <span class="text-2xl">{{getPersonInitials(person.name)}}</span>
+        </div>
+      </div>
+      <h3 class="card-title">{{person.name}}</h3>
+      <div class="divider">Contacts</div>
+      <!-- Contacts -->
+      <div class="mb-2" *ngFor="let contact of person.contacts">
+        <h4 class="text-md font-bold text-accent">{{contact.type.toUpperCase()}}</h4>
+        <p>{{contact.value}}</p>
+      </div>
+    </div>
+  </div>
+</div>

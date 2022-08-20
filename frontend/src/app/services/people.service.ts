@@ -9,7 +9,6 @@ import { environment } from 'src/environments/environment';
 })
 export class PeopleService {
   private url = `${environment.apiBaseURL || 'http://localhost:8000'}/people`;
-  public people = [] as Person[];
 
   constructor(private httpClient: HttpClient) {}
 
@@ -34,14 +33,5 @@ export class PeopleService {
     console.log({ id });
     return this.httpClient
       .delete<{ status: number }>(`${this.url}/${id}`)
-      .subscribe({
-        next: () => {
-          this.people = this.people.filter((person) => person.id !== id);
-          console.log('DELETED');
-        },
-        error: (e) => {
-          console.log(e);
-        },
-      });
   }
 }
