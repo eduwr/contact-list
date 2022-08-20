@@ -8,6 +8,7 @@ import { mockedPeopleService } from "../__mocks__/mockedPeopleService";
 import { Person } from "../../people/person.entity";
 import { createPeople } from "../../people/__mocks__/utils/createPeople";
 import { createContacts } from "../__mocks__/utils/createContact";
+import { CreateContactDTO } from "../interfaces/createContact.dto";
 
 describe("Contacts Service", () => {
   let contactsService: IContactsService;
@@ -15,19 +16,31 @@ describe("Contacts Service", () => {
   let peopleServices: jest.MockedObject<IPeopleService>;
   let naruto: Person;
   let narutoPhone: Contact
+  let createContactDTO: CreateContactDTO;
+
 
   beforeEach(() => {
     peopleServices = mockedPeopleService;
     contactsRepository = mockedContactsRepository;
     contactsService = new ContactsService(contactsRepository, peopleServices);
-    [narutoPhone] = createContacts(1)
   });
+
+  beforeAll(() => {
+    [naruto] = createPeople(1);
+    [narutoPhone] = createContacts(1);
+    createContactDTO = {
+      personId: naruto.id,
+      type: "naruto phone",
+      value: "4545454545"
+    }
+  })
+
+
 
   describe("findAllByPersonId()", () => {
     beforeEach(() => {
       mockedContactsRepository.find.mockClear();
       peopleServices.findPersonById.mockClear();
-      [ naruto ] = createPeople(1);
     });
 
     it("Should throw if called without personId", async () => {
@@ -157,5 +170,87 @@ describe("Contacts Service", () => {
       contactsRepository.findOneOrFail.mockRejectedValueOnce(new Error());
       await expect(async () => await contactsService.findContactById(narutoPhone.id)).rejects.toThrow()
     })
+  })
+
+  describe("createContact()", () => {
+    beforeEach(() => {
+      contactsRepository.save.mockClear()
+    })
+
+    it("Should throw if called with wrong parameters", async () => {
+      await expect(async () => {
+        await contactsService.createContact({  } as CreateContactDTO);
+      }).rejects.toThrow();
+    })
+
+    it("Should NOT throw if called with a valid parameters", async () => {
+      await expect(contactsService.createContact(createContactDTO),
+      ).resolves.not.toThrow();
+    });
+
+    it("Should throw if person not found", async () => {
+      peopleServices.findPersonById.mockRejectedValueOnce(new Error())
+      await expect(async () => {
+        await contactsService.createContact(createContactDTO);
+      }).rejects.toThrow();
+    })
+
+    it("Should call repository once", async () => {
+      await contactsService.createContact(createContactDTO);
+      await expect(
+        contactsRepository.save,
+      ).toBeCalledTimes(1);
+    });
+
+    it("Should return a contact if repository resolves", async () => {
+      contactsRepository.save.mockResolvedValueOnce(narutoPhone);
+      await expect(await contactsService.createContact(createContactDTO)).toBe(narutoPhone)
+    })
+
+    it("Should throw an error if repository rejects to throw", async () => {
+      contactsRepository.save.mockRejectedValueOnce(new Error());
+      await expect(async () => await contactsService.createContact(createContactDTO)).rejects.toThrow()
+    })
+  })
+
+  describe("updateContact()", () => {
+    beforeEach(() => {
+      contactsRepository.save.mockClear()
+    })
+
+    it("Should throw if called with wrong parameters", async () => {
+      await expect(async () => {
+        await contactsService.updateContact("", {} as Partial<CreateContactDTO>);
+      }).rejects.toThrow();
+    })
+
+    it("Should NOT throw if called with a valid parameters", async () => {
+      await expect(contactsService.updateContact("randomId", createContactDTO as Partial<CreateContactDTO>),
+      ).resolves.not.toThrow();
+    });
+
+    it("Should throw if contact not found", async () => {
+      contactsRepository.findOneOrFail.mockRejectedValueOnce(new Error())
+      await expect(async () => {
+        await contactsService.updateContact(naruto.id, createContactDTO);
+      }).rejects.toThrow();
+    })
+
+    it("Should call repository.save once", async () => {
+      await contactsService.updateContact(naruto.id, createContactDTO);
+      await expect(
+        contactsRepository.save,
+      ).toBeCalledTimes(1);
+    });
+
+    it("Should call repository.save with correct parameters", async () => {
+      contactsRepository.findOneOrFail.mockResolvedValueOnce(narutoPhone);
+      narutoPhone.value = "NewPhone"
+      await contactsService.updateContact(naruto.id, {value: narutoPhone.value});
+
+      await expect(
+        contactsRepository.save,
+      ).toBeCalledWith(narutoPhone);
+    });
   })
 });

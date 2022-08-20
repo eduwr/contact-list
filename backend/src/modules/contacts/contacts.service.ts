@@ -3,13 +3,26 @@ import { CreateContactDTO } from "./interfaces/createContact.dto";
 import { Contact } from "./contact.entity";
 import { Repository } from "typeorm";
 import { IPeopleService } from "../people/interfaces/people.service.interface";
+import { v4 as uuid } from "uuid";
 
 export class ContactsService implements IContactsService {
   constructor(private contactsRepository: Repository<Contact>, private peopleServices: IPeopleService) {
   }
 
-  createContact(createPersonDto: CreateContactDTO): Promise<Contact> {
-    throw new Error("Method not implemented");
+  async createContact({ personId, type, value }: CreateContactDTO): Promise<Contact> {
+    if (!(personId && type && value)) {
+      throw new Error("Bad Request");
+    }
+
+    const person = await this.peopleServices.findPersonById(personId);
+
+    const contact = new Contact();
+    contact.id = uuid();
+    contact.value = value;
+    contact.type = type;
+    contact.person = person;
+
+    return await this.contactsRepository.save(contact);
   }
 
   async deleteContact(id: string): Promise<void> {
@@ -41,12 +54,22 @@ export class ContactsService implements IContactsService {
 
     return await this.contactsRepository.findOneOrFail({
       where: {
-        id
-      }
-    })
+        id,
+      },
+    });
   }
 
-  updateContact(id: string, updateContactDTO: Partial<CreateContactDTO>): Promise<Contact> {
-    throw new Error("Method not implemented");
+  async updateContact(id: string, { personId, type, value }: Partial<CreateContactDTO>): Promise<Contact> {
+    if (!id) {
+      throw new Error("Bad Request");
+    }
+
+    if (!type && !value) {
+      throw new Error("Bad Request");
+    }
+
+    const contact = await this.findContactById(id);
+
+    return await this.contactsRepository.save(contact)
   }
 }
