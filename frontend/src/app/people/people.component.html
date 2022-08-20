@@ -4,7 +4,10 @@
   <section class="py-10 px-5 ">
     <ul class="flex flex-row justify-center flex-wrap gap-8">
       <li *ngFor="let person2 of people">
-        <app-person-card (onDelete)="deletePerson($event)" [person]="person2"></app-person-card>
+        <app-person-card
+          (onDelete)="deletePerson($event)"
+          (onUpdatePerson)="updatePerson($event)"
+          [person]="person2"></app-person-card>
       </li>
     </ul>
 

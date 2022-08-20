@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Person } from "../../../shared/interfaces/person.interface";
+import { FormControl } from "@angular/forms";
+import { CreatePersonDTO } from "../../../shared/dto/CreatePersonDTO";
 
 
 @Component({
@@ -9,13 +11,16 @@ import { Person } from "../../../shared/interfaces/person.interface";
 export class PersonCardComponent implements OnInit {
   @Input() person = { id: '', name: '', contacts: [] } as Person;
   @Output() onDelete = new EventEmitter<{id: string}>();
-
-  constructor() {
-
-  }
+  @Output() onUpdatePerson = new EventEmitter<Person>();
+  personEditMode = false;
+  name = new FormControl('');
 
   ngOnInit(): void {
-    console.log(this.person)
+    this.name.setValue(this.person.name);
+  }
+
+  togglePersonEditMode() {
+    this.personEditMode = !this.personEditMode
   }
 
   emitDeleteEvent(id: string) {
@@ -30,5 +35,18 @@ export class PersonCardComponent implements OnInit {
       .join(" ");
   }
 
+  cancelEditPersonName() {
+    this.name.setValue(this.person.name)
+    this.togglePersonEditMode()
+  }
 
+  updatePersonName () {
+    if(this.name.value) {
+      this.onUpdatePerson.emit({
+        ...this.person,
+        name: this.name.value
+      })
+    }
+
+  }
 }

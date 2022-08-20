@@ -21,13 +21,12 @@ export class PeopleComponent implements OnInit {
       next: (response) => {
 
         this.people = response
-        console.log("HERE", response, this.people)
       },
       error: err => console.log(err)
     })
   }
 
-  deletePerson({ id }: {id: string}) {
+  deletePerson({ id }: { id: string }) {
     this.peopleService.deletePerson(id).subscribe({
       next: () => {
         this.people = this.people.filter((person) => person.id !== id);
@@ -40,7 +39,7 @@ export class PeopleComponent implements OnInit {
   }
 
   addPersonNextStep(step?: number) {
-    if(typeof step !== "undefined") {
+    if (typeof step !== "undefined") {
       this.addPersonStep = step;
       return;
     }
@@ -55,7 +54,24 @@ export class PeopleComponent implements OnInit {
       error: (err) => {
         console.log(err)
       },
-      complete: () =>  this.addPersonNextStep(0)
+      complete: () => this.addPersonNextStep(0)
     })
   }
+
+  updatePerson(payload: Person) {
+    this.peopleService.updatePerson(payload.id, {
+      name: payload.name
+    }).subscribe({
+      next: response => {
+        const index = this.people.findIndex(person => person.id === payload.id)
+        this.people[index] = response;
+      },
+      error: err => {
+        console.log(err)
+      }
+
+    })
+  }
+
+
 }
