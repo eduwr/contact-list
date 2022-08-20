@@ -38,6 +38,12 @@ On the main directory just run (Docker needed):
   $ docker compose up
 ```
 
+#### Default ports
+
+* frontend - 4200
+* backend - 8000
+* postgres - 5432
+
 ### Run without docker
 
 Check the readme inside each project.
