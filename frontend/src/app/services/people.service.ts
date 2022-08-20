@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { Person } from "../../shared/interfaces/person.interface";
-import { CreatePersonDTO } from "../../shared/dto/CreatePersonDTO";
+import { HttpClient } from '@angular/common/http';
+import { Person } from '../../shared/interfaces/person.interface';
+import { CreatePersonDTO } from '../../shared/dto/CreatePersonDTO';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PeopleService {
-  private url = 'http://localhost:8000/people';
-  public people = [] as Person[]
+  private url = `${environment.apiBaseURL || 'http://localhost:8000'}/people`;
+  public people = [] as Person[];
 
-  constructor(private httpClient: HttpClient) {
-  }
+  constructor(private httpClient: HttpClient) {}
 
   getPeople() {
-    console.log("getPeople")
+    console.log('getPeople');
     return this.httpClient.get<Person[]>(this.url);
   }
 
@@ -31,15 +31,17 @@ export class PeopleService {
   }
 
   deletePerson(id: string) {
-    console.log({id})
-    return this.httpClient.delete<{ status: number }>(`${this.url}/${id}`).subscribe({
-      next: () => {
-        this.people = this.people.filter(person => person.id !== id)
-        console.log("DELETED")
-      },
-      error: e => {
-        console.log(e);
-      }
-    });
+    console.log({ id });
+    return this.httpClient
+      .delete<{ status: number }>(`${this.url}/${id}`)
+      .subscribe({
+        next: () => {
+          this.people = this.people.filter((person) => person.id !== id);
+          console.log('DELETED');
+        },
+        error: (e) => {
+          console.log(e);
+        },
+      });
   }
 }

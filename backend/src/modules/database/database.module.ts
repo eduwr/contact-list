@@ -1,12 +1,12 @@
 import { DataSource } from "typeorm";
-import "reflect-metadata"
+import "reflect-metadata";
 import { Person } from "../people/person.entity";
 import { Contact } from "../contacts/contact.entity";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
-  port: 5432,
+  host: process.env.DATABASE_HOST || "localhost",
+  port: process.env.DATABASE_PORT ? parseInt(process.env.DATABASE_PORT) : 5432,
   username: "postgres",
   password: "example",
   database: "postgres",
@@ -15,11 +15,10 @@ export const AppDataSource = new DataSource({
   entities: [Person, Contact],
   subscribers: [],
   migrations: [],
-})
-
+});
 
 AppDataSource.initialize()
   .then(() => {
-    console.log("Database Initialized")
+    console.log("Database Initialized");
   })
-  .catch((error) => console.log(error))
+  .catch((error) => console.log(error));

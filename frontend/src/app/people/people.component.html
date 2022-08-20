@@ -30,7 +30,29 @@
     </div>
   </section>
   <div class="tooltip tooltip-right tooltip-primary fixed bottom-10 left-10" data-tip="Add Person">
-    <button class="btn btn-circle btn-lg text-4xl btn-primary ">+</button>
+    <label for="add-user-modal" class="btn btn-circle btn-lg text-4xl btn-primary modal-button">+</label>
   </div>
 
+
+
+  <!-- Put this part before </body> tag -->
+  <input type="checkbox" id="add-user-modal" class="modal-toggle" />
+  <div class="modal">
+    <div class="modal-box">
+      <ul class="steps">
+        <li class="step step-primary">Person Name</li>
+        <li class="step">Contacts</li>
+      </ul>
+      <form>
+        <div class="form-control w-full max-w-xs">
+          <label class="label">
+            <span class="label-text">What is your name?</span>
+          </label>
+          <input type="text" placeholder="Type here" class="input input-bordered w-full max-w-xs" />
+        </div>
+      </form>
+    </div>
+  </div>
 </main>
+
+

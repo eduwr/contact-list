@@ -13,7 +13,7 @@ export interface AppInterface {
 export class App implements AppInterface {
   constructor(private routes: RouterInterface[]) {}
 
-  start(port = 8000) {
+  start(port = process.env.PORT || 8000) {
     const app = express();
 
     app.use(cors());
