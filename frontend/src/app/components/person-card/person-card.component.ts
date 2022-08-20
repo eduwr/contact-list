@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Person } from "../../../shared/interfaces/person.interface";
 import { FormControl } from "@angular/forms";
-import { CreatePersonDTO } from "../../../shared/dto/CreatePersonDTO";
 
 
 @Component({
@@ -31,6 +30,7 @@ export class PersonCardComponent implements OnInit {
     return name
       .trim()
       .split(" ")
+      .slice(0, 2)
       .map(part => part.charAt(0))
       .join(" ");
   }
