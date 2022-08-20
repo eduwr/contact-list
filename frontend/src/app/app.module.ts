@@ -8,13 +8,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { PersonCardComponent } from './components/person-card/person-card.component';
 import { AddPersonFormComponent } from './components/add-person-form/add-person-form.component';
 import { ReactiveFormsModule } from "@angular/forms";
+import { ContactsListComponent } from './components/contacts-list/contacts-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PeopleComponent,
     PersonCardComponent,
-    AddPersonFormComponent
+    AddPersonFormComponent,
+    ContactsListComponent
   ],
   imports: [
     BrowserModule,

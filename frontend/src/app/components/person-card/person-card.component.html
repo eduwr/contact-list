@@ -15,6 +15,7 @@
           <span class="text-2xl">{{getPersonInitials(person.name)}}</span>
         </div>
       </div>
+      <!-- Title -->
       <div *ngIf="personEditMode;then showForm else showTitle"></div>
       <ng-template #showTitle>
         <div class="flex flex-row">
@@ -35,18 +36,15 @@
                    class="input input-bordered w-full max-w-xs"/>
             <button [disabled]="!name.valid" type="button" (click)="cancelEditPersonName()" class="btn btn-square">X
             </button>
-            <button [disabled]="!name.valid" type="button" (click)="updatePersonName()" class="btn btn-square btn-primary">Save
+            <button [disabled]="!name.valid" type="button" (click)="updatePersonName()"
+                    class="btn btn-square btn-primary">Save
             </button>
           </div>
         </div>
       </ng-template>
-
-      <div class="divider">Contacts</div>
       <!-- Contacts -->
-      <div class="mb-2" *ngFor="let contact of person.contacts">
-        <h4 class="text-md font-bold text-accent">{{contact.type.toUpperCase()}}</h4>
-        <p>{{contact.value}}</p>
-      </div>
+      <app-contacts-list [contacts]="person.contacts" [personId]="person.id">
+      </app-contacts-list>
     </div>
   </div>
 </div>
