@@ -24,11 +24,9 @@ export class ContactsService {
     );
   }
 
-  updateContact(id: string, updatePersonDTO: Partial<Partial<CreateContactDTO>>) {
-    return this.httpClient.patch<Contact>(`${this.contactsUrl}/${id}`, updatePersonDTO);
-  }
-
   deleteContact(id: string) {
+    const endpoint = `${this.contactsUrl}/${id}`
+    console.log(endpoint)
     return this.httpClient
       .delete<{ status: number }>(`${this.contactsUrl}/${id}`)
   }

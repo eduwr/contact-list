@@ -46,4 +46,15 @@ export class ContactsListComponent implements OnInit {
       )
     }
   }
+
+  deleteContact(id: string) {
+    this.contactsService.deleteContact(id).subscribe({
+        next: () => {
+          this.contacts = this.contacts.filter(contact => contact.id !== id);
+        },
+        error: err => console.log(err),
+      }
+    )
+  }
+
 }
