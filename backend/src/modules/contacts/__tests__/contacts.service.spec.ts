@@ -7,17 +7,20 @@ import { IPeopleService } from "../../people/interfaces/people.service.interface
 import { mockedPeopleService } from "../__mocks__/mockedPeopleService";
 import { Person } from "../../people/person.entity";
 import { createPeople } from "../../people/__mocks__/utils/createPeople";
+import { createContacts } from "../__mocks__/utils/createContact";
 
 describe("Contacts Service", () => {
   let contactsService: IContactsService;
   let contactsRepository: jest.MockedObject<Repository<Contact>>;
   let peopleServices: jest.MockedObject<IPeopleService>;
   let naruto: Person;
+  let narutoPhone: Contact
 
   beforeEach(() => {
     peopleServices = mockedPeopleService;
     contactsRepository = mockedContactsRepository;
     contactsService = new ContactsService(contactsRepository, peopleServices);
+    [narutoPhone] = createContacts(1)
   });
 
   describe("findAllByPersonId()", () => {
@@ -122,4 +125,37 @@ describe("Contacts Service", () => {
       ).resolves.not.toThrow();
     });
   });
+
+  describe("findContactById()", () => {
+    beforeEach(() => {
+      contactsRepository.findOneOrFail.mockClear()
+    })
+    it("Should throw if called without id", async () => {
+      await expect(async () => {
+        await contactsService.findContactById("");
+      }).rejects.toThrow();
+    })
+
+    it("Should NOT throw if called with a valid id", async () => {
+      await expect(contactsService.findContactById("random_id"),
+      ).resolves.not.toThrow();
+    });
+
+    it("Should call repository once", async () => {
+      await contactsService.findContactById("1");
+      await expect(
+        contactsRepository.findOneOrFail,
+      ).toBeCalledTimes(1);
+    });
+
+    it("Should return a contact if repository resolves", async () => {
+       contactsRepository.findOneOrFail.mockResolvedValueOnce(narutoPhone);
+       await expect(await contactsService.findContactById(narutoPhone.id)).toBe(narutoPhone)
+    })
+
+    it("Should throw an error if repository rejects to throw", async () => {
+      contactsRepository.findOneOrFail.mockRejectedValueOnce(new Error());
+      await expect(async () => await contactsService.findContactById(narutoPhone.id)).rejects.toThrow()
+    })
+  })
 });

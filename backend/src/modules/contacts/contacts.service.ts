@@ -34,8 +34,16 @@ export class ContactsService implements IContactsService {
     });
   }
 
-  findContactById(id: string): Promise<Contact> {
-    throw new Error("Method not implemented");
+  async findContactById(id: string): Promise<Contact> {
+    if (!id) {
+      throw new Error("Bad Request");
+    }
+
+    return await this.contactsRepository.findOneOrFail({
+      where: {
+        id
+      }
+    })
   }
 
   updateContact(id: string, updateContactDTO: Partial<CreateContactDTO>): Promise<Contact> {
