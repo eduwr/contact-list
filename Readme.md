@@ -37,6 +37,7 @@ On the main directory just run (Docker needed):
 ```bash
   $ docker compose up
 ```
+> NOTE: It won't work if you don't install the dependencies because the docker-compose is using volumes to mirror the local directory.
 
 #### Default ports
 
