@@ -17,7 +17,7 @@ export class ContactsService implements IContactsService {
       throw new Error("Bad Request");
     }
 
-    const contract = await this.contactsRepository.findOneOrFail({ where: { id } });
+    const contract = await this.findContactById(id);
     await this.contactsRepository.remove(contract);
   }
 
